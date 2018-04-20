@@ -33,6 +33,8 @@ https://kd8bxp.blogspot.com/
  
 */
 
+#define ROBOTNAME "LeRoysBot" //Bluetooth Name HC-06
+#define ROBOTPIN 1234 //Bluetooth Pin
 #define LEFTSWITCH 6 //D6 Blue Connector Marked "B"
 #define RIGHTSWITCH 5 //D5 Blue Connector Marked "G"
 #define M1SPD 10 //D10 PWM M1 speed pin
@@ -52,12 +54,19 @@ unsigned long timer1 = 0;  //Stores the time when the last command was received 
 void setup() 
 {       
   Serial.begin(9600);  //Set the baud rate to that of your Bluetooth module.
+delay(5000);
  pinMode(LEFTSWITCH, INPUT_PULLUP);
 pinMode(RIGHTSWITCH, INPUT_PULLUP);
 pinMode(M1SPD, OUTPUT);
 pinMode(M2SPD, OUTPUT);
 pinMode(M1DIR, OUTPUT);
 pinMode(M2DIR, OUTPUT);
+Serial.print("AT+NAME");
+Serial.print(ROBOTNAME);
+delay(1000);
+Serial.print("AT+PIN");
+Serial.print(ROBOTPIN);
+delay(1000);
 stop();
 }
 
