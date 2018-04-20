@@ -33,8 +33,16 @@ https://kd8bxp.blogspot.com/
  
 */
 
+#include <Adafruit_SSD1306.h>
+#define OLED_RESET 15
+Adafruit_SSD1306 display(OLED_RESET);
+
+#if (SSD1306_LCDHEIGHT != 64)
+#error("Height incorrect, please fix Adafruit_SSD1306.h!");
+#endif
+
 #define ROBOTNAME "LeRoysBot" //Bluetooth Name HC-06
-#define ROBOTPIN 1234 //Bluetooth PIN 1234 is default see setup()
+#define ROBOTPIN 1234 //Bluetooth Pin 1234 is default see setup()
 #define LEFTSWITCH 6 //D6 Blue Connector Marked "B"
 #define RIGHTSWITCH 5 //D5 Blue Connector Marked "G"
 #define M1SPD 10 //D10 PWM M1 speed pin
@@ -54,6 +62,16 @@ unsigned long timer1 = 0;  //Stores the time when the last command was received 
 void setup() 
 {       
   Serial.begin(9600);  //Set the baud rate to that of your Bluetooth module.
+display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
+display.display();   
+display.clearDisplay();
+display.setTextSize(1);
+  display.setTextColor(WHITE);
+  display.setCursor(15,20);
+  display.println("Little Hammerhead");
+  display.setCursor(45, 29);
+  display.println("Robot!");
+  display.display();
 delay(5000);
  pinMode(LEFTSWITCH, INPUT_PULLUP);
 pinMode(RIGHTSWITCH, INPUT_PULLUP);
@@ -82,21 +100,49 @@ void loop(){
       switch(command){
       case 'F':
       setSpd(velocity);  
+        
+        //display.setTextSize(2);
+        //display.clearDisplay();
+        //display.setCursor(0,0);
+        //display.println("Forward.");
+        //display.display();
+        lookDown();
         Forward;
         break;
       case 'B': 
       setSpdB(velocity); 
+        //display.setTextSize(2);
+        //display.clearDisplay();
+        //display.setCursor(0,0);
+        //display.println("Backward.");
+        //display.display();
+        lookUp();
         Backward();
         break;
       case 'L': 
-      setSpd(velocity); 
+      setSpd(velocity);
+      //display.setTextSize(2);
+        //display.clearDisplay();
+        //display.setCursor(0,0);
+        //display.println("Left.");
+        //display.display();
+        lookLeft(); 
         Left();
         break;
       case 'R':
       setSpd(velocity);
+      //display.setTextSize(2);
+        //display.clearDisplay();
+        //display.setCursor(0,0);
+        //display.println("Right.");
+        //display.display();
+        lookRight();
         Right();  
         break;
-      case 'S':  
+      case 'S':
+      //display.clearDisplay();
+      //display.display();
+      lookStraight();  
         stop();
         break; 
       case 'I':  //FR  
@@ -129,6 +175,11 @@ void loop(){
         stop();
         break; 
        case 'V': //play charge (Horn ON command)
+       display.setTextSize(2);
+        display.clearDisplay();
+        display.setCursor(0,0);
+        display.println("Charge!");
+        display.display();
        playCharge();
        break;        
       default:  //Get velocity
@@ -213,4 +264,59 @@ void stop() {
   digitalWrite(M1DIR, LOW); 
   analogWrite(M2SPD, 0);
   digitalWrite(M2DIR, LOW);
+}
+
+void lookDown() {
+  display.clearDisplay();
+  //display.drawRoundRect(0, 0, 30, 60, 50, WHITE);
+  display.drawCircle(50, 35, 15,  WHITE);
+  display.drawCircle(90, 35, 15, WHITE);
+  display.fillCircle(50, 40, 10, WHITE);
+  display.fillCircle(90, 40, 10, WHITE);
+  // put your main code here, to run repeatedly:
+display.display();
+}
+
+void lookUp() {
+  display.clearDisplay();
+  //display.drawRoundRect(0, 0, 30, 60, 50, WHITE);
+  display.drawCircle(50, 35, 15,  WHITE);
+  display.drawCircle(90, 35, 15, WHITE);
+  display.fillCircle(50, 30, 10, WHITE);
+  display.fillCircle(90, 30, 10, WHITE);
+  // put your main code here, to run repeatedly:
+display.display();
+}
+
+void lookLeft() {
+  display.clearDisplay();
+  //display.drawRoundRect(0, 0, 30, 60, 50, WHITE);
+  display.drawCircle(50, 35, 15,  WHITE);
+  display.drawCircle(90, 35, 15, WHITE);
+  display.fillCircle(45, 35, 10, WHITE);
+  display.fillCircle(85, 35, 10, WHITE);
+  // put your main code here, to run repeatedly:
+display.display();
+}
+
+void lookRight() {
+  display.clearDisplay();
+  //display.drawRoundRect(0, 0, 30, 60, 50, WHITE);
+  display.drawCircle(50, 35, 15,  WHITE);
+  display.drawCircle(90, 35, 15, WHITE);
+  display.fillCircle(55, 35, 10, WHITE);
+  display.fillCircle(95, 35, 10, WHITE);
+  // put your main code here, to run repeatedly:
+display.display();
+}
+
+void lookStraight() {
+  display.clearDisplay();
+  //display.drawRoundRect(0, 0, 30, 60, 50, WHITE);
+  display.drawCircle(50, 35, 15,  WHITE);
+  display.drawCircle(90, 35, 15, WHITE);
+  display.fillCircle(50, 35, 8, WHITE);
+  display.fillCircle(90, 35, 8, WHITE);
+  // put your main code here, to run repeatedly:
+display.display();
 }
