@@ -76,7 +76,7 @@ void loop(){
         Forward;
         break;
       case 'B': 
-      setSpd(velocity); 
+      setSpdB(velocity); 
         Backward();
         break;
       case 'L': 
@@ -160,19 +160,19 @@ void Forward() {
     }
 
 void Backward() {
-  digitalWrite(M1DIR, LOW);
-  digitalWrite(M2DIR, LOW);
+  digitalWrite(M1DIR, HIGH);
+  digitalWrite(M2DIR, HIGH);
 }
 
 void Left() {
   
-  digitalWrite(M1DIR, LOW);
-  digitalWrite(M2DIR, HIGH);
+  digitalWrite(M1DIR, HIGH);
+  digitalWrite(M2DIR, LOW);
 }
 
 void Right() {
-  digitalWrite(M1DIR, HIGH);
-  digitalWrite(M2DIR, LOW);
+  digitalWrite(M1DIR, LOW);
+  digitalWrite(M2DIR, HIGH);
 }
 
 void playCharge() {
@@ -192,6 +192,11 @@ int duration[] = {100, 100, 100, 300, 100, 300};
 void setSpd(int m) {  
   analogWrite(M1SPD, m);
   analogWrite(M2SPD, m);
+}
+
+void setSpdB(int m) {
+  analogWrite(M1SPD, 255 - m);
+  analogWrite(M2SPD, 255 - m);
 }
 
 void stop() {
