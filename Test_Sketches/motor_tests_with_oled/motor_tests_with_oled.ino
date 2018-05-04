@@ -103,6 +103,7 @@ display.clearDisplay();
 display.setCursor(0,0);
 display.println("Backward.");
 display.display();
+setSpd(255 - setspd, 255 - setspd);
 Backward();
 delay(500);
 
@@ -136,13 +137,13 @@ void setSpd(int m1, int m2) {
   analogWrite(M2SPD, m2);
 }
 void Forward() {
-  digitalWrite(M1DIR, HIGH);
-  digitalWrite(M2DIR, HIGH);
+  digitalWrite(M1DIR, LOW);
+  digitalWrite(M2DIR, LOW);
   }
 
 void Backward() {
-  digitalWrite(M1DIR, LOW);
-  digitalWrite(M2DIR, LOW);
+  digitalWrite(M1DIR, HIGH);
+  digitalWrite(M2DIR, HIGH);
 }
 
 void Left() {

@@ -48,7 +48,7 @@ while(digitalRead(RIGHTSWITCH) == HIGH) {
 //Waiting for RIGHTSWITCH Button to be pushed to continue
 }
 
-playCharge();
+//playCharge();
 
 setSpd(setspd,setspd); //set the PWM for motor1 and motor2 
 //can be used to set different speeds and cause turns
@@ -57,11 +57,12 @@ setSpd(setspd,setspd); //set the PWM for motor1 and motor2
 Forward();
 delay(500);
 Left();
-delay(200);
+delay(400);
 Right();
 delay(400);
 Left();
-delay(200);
+delay(400);
+setSpd(255 - setspd, 255 - setspd);
 Backward();
 delay(500);
 
@@ -94,14 +95,15 @@ void setSpd(int m1, int m2) {
   analogWrite(M1SPD, m1);
   analogWrite(M2SPD, m2);
 }
+
 void Forward() {
-  digitalWrite(M1DIR, HIGH);
-  digitalWrite(M2DIR, HIGH);
+  digitalWrite(M1DIR, LOW);
+  digitalWrite(M2DIR, LOW);
   }
 
 void Backward() {
-  digitalWrite(M1DIR, LOW);
-  digitalWrite(M2DIR, LOW);
+  digitalWrite(M1DIR, HIGH);
+  digitalWrite(M2DIR, HIGH);
 }
 
 void Left() {
