@@ -1,10 +1,13 @@
 /*
- * "Bump-N-Go" By LeRoy Miller Dec 2017
+ * Check your motors By LeRoy Miller Dec 2017
  * for Keyes L-298P Shield.
- * 
- * Uses the switches to detect bumps, moves the robot backwards
- * and turns in the robot left or right, based on switch pressed
- * starts the robot moving forward again.  
+ * Moves the robot forward for a short distance,
+ * spins left, then right, and then left
+ * and move the robot backward for a short distance.
+ * Speed is set using PWM.
+ * Direction is set by enabling the Direction PIN HIGH for forward
+ * or LOW for backward. (M1DIR and M2DIR)
+ * There is no true distance measurment.
  * 
  * If your Motors move in the wrong direction, switch the wires
  * for that motor.
@@ -13,14 +16,6 @@
  * waits again for the RIGHT switch to be pressed, and starts
  * over again.
  */
-
-#include <Adafruit_SSD1306.h>
-#define OLED_RESET 15
-Adafruit_SSD1306 display(OLED_RESET);
-
-#if (SSD1306_LCDHEIGHT != 64)
-#error("Height incorrect, please fix Adafruit_SSD1306.h!");
-#endif
 
 #define LEFTSWITCH 6 //D6 Blue Connector Marked "B"
 #define RIGHTSWITCH 5 //D5 Blue Connector Marked "G"
@@ -31,22 +26,10 @@ Adafruit_SSD1306 display(OLED_RESET);
 #define BUZZER 4 //D4
 
 int lowspd = 100; //PWM for stall of motors
+
 int setspd = 150; //This is PWM the motors will run at.
 
 void setup() {
-display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
-display.display();   
-display.clearDisplay();
-display.setTextSize(1);
-  display.setTextColor(WHITE);
-  display.setCursor(15,20);
-  display.println("Little Hammerhead");
-  display.setCursor(45, 29);
-  display.println("Robot!");
-  display.setCursor(32, 42);
-  display.println("Bump-N-Go!");
-  display.display();
-  delay(2000);
   
 Serial.begin(9600);
 pinMode(LEFTSWITCH, INPUT_PULLUP);
@@ -56,52 +39,44 @@ pinMode(M2SPD, OUTPUT);
 pinMode(M1DIR, OUTPUT);
 pinMode(M2DIR, OUTPUT);
 stop();
+}
 
- display.setTextSize(1);
-  display.clearDisplay();
-  display.setCursor(0,52);
-  display.println("Hit RIGHT Switch....");
-  display.display();
+void loop() {
+  // put your main code here, to run repeatedly:
 while(digitalRead(RIGHTSWITCH) == HIGH) {
   delay(1);
 //Waiting for RIGHTSWITCH Button to be pushed to continue
 }
 
-playCharge();
+//playCharge();
 
-}
-
-void loop() {
-display.clearDisplay();
-display.display();
 setSpd(setspd,setspd); //set the PWM for motor1 and motor2 
 //can be used to set different speeds and cause turns
 //this is not a direction control.
-Forward();
-if (digitalRead(LEFTSWITCH) == LOW || digitalRead(RIGHTSWITCH) == LOW) {
-      int left = digitalRead(LEFTSWITCH);
-      int right = digitalRead(RIGHTSWITCH);
-        for (int i=0;i<2;i++) {
-            tone(BUZZER, 3600);
-            delay(100);
-            tone(BUZZER, 3200);
-            delay(100);
-          }
-        noTone(4);
-        Backward();
-        delay(1000);
-   if (left == 0) { 
-        Right();
-        delay(500);      
-   }
-   if (right == 0) {
-        Left();
-        delay(500);
-   }
+
+Backward();
+delay(500);
+/*Left();
+delay(400);
+Right();
+delay(400);
+Left();
+delay(400);
+setSpd(255 - setspd, 255 - setspd);
+Backward();
+delay(500);
+*/
+stop();
+
+  for (int i=0;i<2;i++) {
+tone(BUZZER, 3600);
+delay(100);
+tone(BUZZER, 3200);
+delay(100);
 }
+noTone(4);
 
-Forward();
-
+while(1);
 //start over
 
 }
@@ -121,6 +96,7 @@ void setSpd(int m1, int m2) {
   analogWrite(M1SPD, m1);
   analogWrite(M2SPD, m2);
 }
+
 void Forward() {
   digitalWrite(M1DIR, LOW);
   digitalWrite(M2DIR, LOW);
